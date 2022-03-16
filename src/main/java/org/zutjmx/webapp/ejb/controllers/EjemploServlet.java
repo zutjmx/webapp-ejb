@@ -9,19 +9,32 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.zutjmx.webapp.ejb.service.ServiceEjb;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.io.IOException;
 
 @WebServlet("/index")
 public class EjemploServlet extends HttpServlet {
 
-    @Inject
+    /*@Inject
     private ServiceEjb serviceEjbUno;
 
     @Inject
-    private ServiceEjb serviceEjbDos;
+    private ServiceEjb serviceEjbDos;*/
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServiceEjb serviceEjbUno = null;
+        ServiceEjb serviceEjbDos = null;
+
+        try {
+            InitialContext initialContext = new InitialContext();
+            serviceEjbUno = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjb");
+            serviceEjbDos = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjb");
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
 
         System.out.println(":: Comparación entre serviceEjbUno y serviceEjbDos: " +
                 serviceEjbUno.equals(serviceEjbDos) + " ::");

@@ -2,10 +2,10 @@ package org.zutjmx.webapp.ejb.service;
 
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.context.RequestScoped;
-//import jakarta.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
-@RequestScoped
-@Stateful
+//@RequestScoped
+@Stateless
 public class ServiceEjb {
 
     private int contador;
