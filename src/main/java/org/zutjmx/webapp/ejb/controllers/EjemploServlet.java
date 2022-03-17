@@ -7,7 +7,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.zutjmx.webapp.ejb.models.Producto;
 import org.zutjmx.webapp.ejb.service.ServiceEjb;
+import org.zutjmx.webapp.ejb.service.ServiceEjbLocal;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -17,21 +19,21 @@ import java.io.IOException;
 public class EjemploServlet extends HttpServlet {
 
     /*@Inject
-    private ServiceEjb serviceEjbUno;
+    private ServiceEjbLocal serviceEjbUno;
 
     @Inject
-    private ServiceEjb serviceEjbDos;*/
+    private ServiceEjbLocal serviceEjbDos;*/
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ServiceEjb serviceEjbUno = null;
-        ServiceEjb serviceEjbDos = null;
+        ServiceEjbLocal serviceEjbUno = null;
+        ServiceEjbLocal serviceEjbDos = null;
 
         try {
             InitialContext initialContext = new InitialContext();
-            serviceEjbUno = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjb");
-            serviceEjbDos = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjb");
+            serviceEjbUno = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjbLocal");
+            serviceEjbDos = (ServiceEjb) initialContext.lookup("java:global/webapp-ejb/ServiceEjb!org.zutjmx.webapp.ejb.service.ServiceEjbLocal");
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -39,8 +41,13 @@ public class EjemploServlet extends HttpServlet {
         System.out.println(":: Comparación entre serviceEjbUno y serviceEjbDos: " +
                 serviceEjbUno.equals(serviceEjbDos) + " ::");
 
+        Producto producto = serviceEjbUno.crear(new Producto("Plátano"));
+        System.out.println(":: Nuevo producto: " + producto + " ::");
+
         req.setAttribute("saludoUno", serviceEjbUno.saludar("Jesús Zúñiga Trejo"));
         req.setAttribute("saludoDos", serviceEjbDos.saludar("Ana María Alejandre Arroyo"));
+        req.setAttribute("listado", serviceEjbDos.listar());
+
 
         getServletContext()
                 .getRequestDispatcher("/index.jsp")
